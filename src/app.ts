@@ -2,6 +2,7 @@ import express from 'express';
 import logger from 'morgan';
 import cookieParser from 'cookie-parser';
 import createError from 'http-errors';
+import expressHandlebars from 'express-handlebars';
 import path from 'path';
 
 const app = express();
@@ -12,8 +13,16 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, '../public')));
 
-app.use('/about', (req, res) => {
-  res.send('gracias ~');
+app.set('views', path.join(__dirname, './views'));
+const hbs = expressHandlebars.create({
+  helpers: {},
+  extname: '.hbs'
+});
+app.engine('handlebars', hbs.engine);
+app.set('view engine', 'handlebars');
+
+app.use('/about', (_req, res) => {
+  res.render('about', { hi: 'hola ~' });
 });
 
 app.use((_req, _res, next) => {
