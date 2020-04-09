@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import logger from 'morgan';
 import cookieParser from 'cookie-parser';
 import createError from 'http-errors';
@@ -14,19 +14,30 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, '../public')));
 
 app.set('views', path.join(__dirname, './views'));
+// express-handblars need name engine to .hbs
+// and setup extname to .hbs or hbs at the same time.
 const hbs = expressHandlebars.create({
   helpers: {},
   extname: '.hbs'
 });
-app.engine('handlebars', hbs.engine);
-app.set('view engine', 'handlebars');
+app.engine('hbs', hbs.engine);
+app.set('view engine', 'hbs');
 
 app.use('/about', (_req, res) => {
-  res.render('about', { hi: 'hola ~' });
+  res.render('index/about', { hi: 'hola ~' });
 });
 
 app.use((_req, _res, next) => {
   next(createError(404));
+});
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+app.use((err: createError.HttpError, req: Request, res: Response, _next: NextFunction) => {
+  const message = err.message || 'some thing went wrong';
+  const status = err.status || 500;
+
+  res.status(status);
+  res.render('index/error', { status, message, error: err });
 });
 
 app.listen(3000, () => {
