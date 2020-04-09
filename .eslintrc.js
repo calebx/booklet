@@ -12,6 +12,7 @@ module.exports = {
   extends: [
     'plugin:@typescript-eslint/eslint-recommended',
     'plugin:@typescript-eslint/recommended',
+    'plugin:prettier/recommended',
     'prettier',
     'prettier/@typescript-eslint'
   ],
@@ -21,8 +22,8 @@ module.exports = {
     test: 'readonly',
     expect: 'readonly'
   },
-  plugins: ['@typescript-eslint/eslint-plugin'],
+  plugins: ['@typescript-eslint/eslint-plugin', 'prettier'],
   rules: {
-    '@typescript-eslint/explicit-function-return-type': 'off'
+    'prettier/prettier': 'error'
   }
 };
