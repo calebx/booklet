@@ -15,15 +15,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, '../public')));
 
-app.set('views', path.join(__dirname, './views'));
 // express-handblars need name engine to .hbs,
 // and set extname to .hbs or hbs at the same time.
 const hbs = expressHandlebars.create({
   helpers: {},
   extname: '.hbs'
 });
-app.engine('hbs', hbs.engine);
-app.set('view engine', 'hbs');
+app.engine('.hbs', hbs.engine);
+app.set('view engine', '.hbs');
+app.set('views', path.join(__dirname, './views'));
 
 app.use('/about', (_req, res) => {
   res.render('index/about', { hi: 'hola ~' });
