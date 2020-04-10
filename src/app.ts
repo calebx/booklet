@@ -1,9 +1,9 @@
 import express, { Request, Response, NextFunction } from 'express';
+import cors from 'cors';
 import logger from 'morgan';
 import cookieParser from 'cookie-parser';
 import createError from 'http-errors';
 import expressHandlebars from 'express-handlebars';
-import cors from 'cors';
 import path from 'path';
 
 const app = express();
@@ -15,12 +15,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, '../public')));
 
-// express-handblars need name engine to .hbs,
-// and set extname to .hbs or hbs at the same time.
-const hbs = expressHandlebars.create({
-  helpers: {},
-  extname: '.hbs'
-});
+// hint: https://github.com/express-handlebars/express-handlebars#extnamehandlebars
+// .bhs must be setup in both [express-handlebars options] and [express view engine args]
+const hbs = expressHandlebars.create({ helpers: {}, extname: '.hbs' });
 app.engine('.hbs', hbs.engine);
 app.set('view engine', '.hbs');
 app.set('views', path.join(__dirname, './views'));
@@ -35,11 +32,10 @@ app.use((_req, _res, next) => {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use((err: createError.HttpError, req: Request, res: Response, _next: NextFunction) => {
-  const message = err.message || 'some thing went wrong';
   const status = err.status || 500;
+  const message = err.message || 'some thing went wrong';
 
-  res.status(status);
-  res.render('index/error', { status, message, error: err });
+  res.status(status).render('index/error', { status, message, error: err });
 });
 
 app.listen(3000, () => {
