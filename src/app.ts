@@ -3,10 +3,12 @@ import logger from 'morgan';
 import cookieParser from 'cookie-parser';
 import createError from 'http-errors';
 import expressHandlebars from 'express-handlebars';
+import cors from 'cors';
 import path from 'path';
 
 const app = express();
 
+app.use(cors());
 app.use(logger('dev'));
 app.use(cookieParser());
 app.use(express.json());
@@ -14,8 +16,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, '../public')));
 
 app.set('views', path.join(__dirname, './views'));
-// express-handblars need name engine to .hbs
-// and setup extname to .hbs or hbs at the same time.
+// express-handblars need name engine to .hbs,
+// and set extname to .hbs or hbs at the same time.
 const hbs = expressHandlebars.create({
   helpers: {},
   extname: '.hbs'
